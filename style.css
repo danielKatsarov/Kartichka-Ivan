@@ -1,0 +1,412 @@
+/* ==========================================================
+   BIRTHDAY CARD STYLES
+
+   HOW THIS FILE IS ORGANISED
+   1. Settings      colors, fonts, card size (start here)
+   2. Page          background and centering
+   3. Card          the card itself and how it opens
+   4. Cover         the front: balloons, title, "tap to open"
+   5. Left page     inside left: bunting and your message
+   6. Right page    inside right: the cake
+   7. Confetti      the falling pieces
+   8. Animations    all the movement, in one place
+
+   Everything inside the card is sized in "em", so changing
+   --card-width in section 1 scales the whole card.
+   ========================================================== */
+
+
+/* ---------- 1. SETTINGS ---------- */
+:root {
+  /* colors */
+  --page-bg: #e4e8ff;   /* background behind the card */
+  --cover: #f26d1a;     /* front of the card, candles */
+  --paper: #f3f1ff;     /* inside pages */
+  --text: #1a1f6b;      /* text on the inside pages */
+  --red: #ff5a4e;
+  --yellow: #ffc83d;
+  --green: #2ed3a0;
+  --white: #ffffff;
+
+  /* fonts (loaded in index.html) */
+  --font-title: "Bagel Fat One", "Arial Rounded MT Bold", sans-serif;
+  --font-text: "Figtree", system-ui, sans-serif;
+
+  /* width of ONE page. Min, preferred, max. */
+  --card-width: clamp(160px, 44vw, 300px);
+}
+
+
+/* ---------- 2. PAGE ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--page-bg);
+  font-family: var(--font-text);
+  overflow-x: hidden;
+}
+
+/* The hidden checkbox that opens the card (no JavaScript needed) */
+.open-toggle {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.open-toggle:focus-visible ~ .card {
+  outline: 3px solid var(--red);
+  outline-offset: 0.5em;
+}
+
+
+/* ---------- 3. CARD ---------- */
+.card {
+  position: relative;
+  width: var(--card-width);
+  height: calc(var(--card-width) * 1.4);
+  font-size: calc(var(--card-width) / 20);   /* 1em = 1/20 of the card width */
+  perspective: 1600px;
+  transition: transform 1s ease;
+}
+
+/* When open, slide the card right so the open spread stays centered */
+.open-toggle:checked ~ .card {
+  transform: translateX(calc(var(--card-width) / 2));
+}
+
+/* Shared by the three "sheets" of the card */
+.page-right,
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  box-shadow: 0 1.5em 3em rgba(20, 24, 100, 0.3);
+}
+
+/* The cover swings open around its left edge */
+.cover {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 1s ease;
+}
+.open-toggle:checked ~ .card .cover {
+  transform: rotateY(-180deg);
+}
+.open-toggle:not(:checked) ~ .card .cover:hover {
+  transform: rotateY(-14deg);   /* small peek when you hover */
+}
+
+.front,
+.back {
+  backface-visibility: hidden;
+}
+
+
+/* ---------- 4. COVER (front) ---------- */
+.front {
+  display: block;
+  cursor: pointer;
+  background: var(--cover);
+  color: var(--white);
+  border-radius: 0.5em 1.2em 1.2em 0.5em;
+  background: 
+    linear-gradient(rgba(97, 99, 144, 0.45), rgba(232, 42, 159, 0.45)),
+    url(7052.jpg) center / cover;
+}
+
+/* Balloons. To add one: copy a <span class="balloon ..."> in the
+   HTML and give it a new position class like the ones below. */
+.balloon {
+  position: absolute;
+  width: 5em;
+  height: 6.2em;
+  border-radius: 50% 50% 48% 48% / 56% 56% 44% 44%;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.6) 0 9%, transparent 22%),
+    var(--balloon-color);
+  transform-origin: 50% 10em;
+  animation: sway 3.6s ease-in-out infinite alternate;
+}
+.balloon::after {              /* the string */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 4.5em;
+  background: rgba(255, 255, 255, 0.7);
+}
+.balloon-1 { --balloon-color: var(--red);    left: 2.2em; top: 3.4em; }
+.balloon-2 { --balloon-color: var(--yellow); left: 7.3em; top: 1.4em; animation-delay: -1.2s; }
+.balloon-3 { --balloon-color: var(--green);  left: 13em;  top: 3.8em; animation-delay: -2.2s; }
+
+.title {
+  position: absolute;
+  left: 1.6em;
+  right: 1em;
+  bottom: 4.6em;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-title);
+  font-weight: 400;
+  line-height: 0.95;
+  transform: rotate(-5deg);
+}
+.title-line-1 { font-size: 2em; color: var(--yellow); }
+.title-line-2 { font-size: 1.5em; color: var(--white); }
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1.3em;
+  translate: -50% 0;
+  white-space: nowrap;
+  padding: 0.55em 1.1em;
+  border-radius: 99em;
+  background: var(--white);
+  color: var(--cover);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+
+/* ---------- 5. LEFT PAGE (inside of the cover) ---------- */
+.back {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 5.6em 1.8em 1.6em;
+  background: 
+    linear-gradient(rgba(243, 241, 255, 0.35), rgba(243, 241, 255, 0.35)),
+    url("13862.jpg") center / cover;
+  color: var(--text);
+  border-radius: 1.2em 0.5em 0.5em 1.2em;
+}
+
+/* Flags along the top */
+.bunting {
+  position: absolute;
+  top: 1em;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding-inline: 0.6em;
+  border-top: 0.18em solid var(--text);
+}
+.bunting i {
+  display: block;
+  width: 2.6em;
+  height: 3em;
+  background: var(--red);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);   /* triangle */
+  transform-origin: 50% 0;
+  animation: flag 2.6s ease-in-out infinite alternate;
+}
+.bunting i:nth-child(3n + 2) { background: var(--yellow); animation-delay: -0.8s; }
+.bunting i:nth-child(3n)     { background: var(--green);  animation-delay: -1.6s; }
+
+.greeting {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 1.9em;
+  line-height: 1;
+  color: var(--cover);
+}
+.message {
+  margin: 0;
+  font-size: 1.12em;
+  line-height: 1.5;
+}
+.signature {
+  margin: auto 0 0;     /* pushes the signature to the bottom */
+  font-weight: 700;
+  font-size: 1.1em;
+}
+.close {
+  cursor: pointer;
+  font-size: 0.95em;
+  text-decoration: underline;
+  color: var(--text);
+}
+
+
+/* ---------- 6. RIGHT PAGE (the cake) ---------- */
+.page-right {
+  background: 
+    linear-gradient(rgba(243, 241, 255, 0.35), rgba(243, 241, 255, 0.35)),
+    url("https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Verity_normal.svg/250px-Verity_normal.svg.png?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail") center / cover;
+  border-radius: 0.5em 1.2em 1.2em 0.5em;
+}
+
+.wish {
+  position: absolute;
+  top: 2em;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 2.3em;
+  line-height: 1;
+  color: var(--red);
+  transform: rotate(-3deg);
+}
+
+.cake {
+  position: absolute;
+  left: 50%;
+  bottom: 5em;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cake::after {                 /* the plate */
+  content: "";
+  width: 16em;
+  height: 0.9em;
+  border-radius: 99em;
+  background: #c9cdf5;
+}
+
+.tier {
+  position: relative;
+  border-radius: 0.5em 0.5em 0 0;
+}
+.tier::before {                /* white icing on top of each tier */
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.8em;
+  border-radius: 0.5em 0.5em 0.4em 0.4em;
+  background: var(--white);
+}
+.tier-top    { width: 8em;  height: 3em;   background: var(--green); }
+.tier-bottom { width: 13em; height: 3.6em; background: var(--red); }
+
+.candle {
+  position: absolute;
+  bottom: 100%;
+  width: 0.6em;
+  height: 2.2em;
+  margin-left: -0.3em;
+  background: var(--cover);
+}
+.candle-1 { left: 25%; }
+.candle-2 { left: 50%; }
+.candle-3 { left: 75%; }
+
+.flame {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 0.8em;
+  height: 1.3em;
+  margin: 0 0 0.1em -0.4em;
+  border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+  background: radial-gradient(ellipse at 50% 72%, #fff7c8 0 24%, var(--yellow) 55%, #ff9a3d 100%);
+  transform-origin: 50% 100%;
+  animation: flicker 0.9s ease-in-out infinite;
+}
+.candle-2 .flame { animation-delay: -0.3s; }
+.candle-3 .flame { animation-delay: -0.6s; }
+
+
+/* ---------- 7. CONFETTI ---------- */
+/* Hidden until the card is open. Each piece gets its own
+   position and start time in the lines below. */
+.confetti {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.5s;
+}
+.open-toggle:checked ~ .confetti {
+  opacity: 1;
+}
+
+.confetti i {
+  position: absolute;
+  top: 0;
+  width: 0.6rem;
+  height: 1rem;
+  background: var(--red);
+  animation: fall 8s linear infinite;
+  animation-play-state: paused;
+}
+.open-toggle:checked ~ .confetti i {
+  animation-play-state: running;
+}
+
+/* colors */
+.confetti i:nth-child(4n + 2) { background: var(--yellow); }
+.confetti i:nth-child(4n + 3) { background: var(--green); }
+.confetti i:nth-child(4n)     { background: var(--cover); }
+/* every third piece is a dot */
+.confetti i:nth-child(3n)     { width: 0.7rem; height: 0.7rem; border-radius: 50%; }
+/* every second piece falls slower */
+.confetti i:nth-child(even)   { animation-duration: 10s; }
+
+/* position across the screen + how far into the fall it starts */
+.confetti i:nth-child(1)  { left: 4%;  animation-delay: -1s; }
+.confetti i:nth-child(2)  { left: 12%; animation-delay: -5s; }
+.confetti i:nth-child(3)  { left: 20%; animation-delay: -3s; }
+.confetti i:nth-child(4)  { left: 28%; animation-delay: -8s; }
+.confetti i:nth-child(5)  { left: 36%; animation-delay: -2s; }
+.confetti i:nth-child(6)  { left: 44%; animation-delay: -6s; }
+.confetti i:nth-child(7)  { left: 52%; animation-delay: -4s; }
+.confetti i:nth-child(8)  { left: 60%; animation-delay: -9s; }
+.confetti i:nth-child(9)  { left: 68%; animation-delay: -7s; }
+.confetti i:nth-child(10) { left: 76%; animation-delay: -1.5s; }
+.confetti i:nth-child(11) { left: 84%; animation-delay: -5.5s; }
+.confetti i:nth-child(12) { left: 92%; animation-delay: -3.5s; }
+
+
+/* ---------- 8. ANIMATIONS ---------- */
+@keyframes sway {
+  from { transform: rotate(-4deg) translateY(0); }
+  to   { transform: rotate(4deg) translateY(-0.6em); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.07); }
+}
+@keyframes flag {
+  from { transform: rotate(-7deg); }
+  to   { transform: rotate(7deg); }
+}
+@keyframes flicker {
+  0%, 100% { transform: scale(1, 1) rotate(-3deg); }
+  30%      { transform: scale(0.9, 1.1) rotate(2deg); }
+  60%      { transform: scale(1.06, 0.94) rotate(-2deg); }
+}
+@keyframes fall {
+  from { transform: translateY(-10vh) rotate(0deg); }
+  to   { transform: translateY(110vh) rotate(720deg); }
+}
+
+/* Turns movement off for people who ask their device for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; }
+  .card, .cover { transition-duration: 0.01s; }
+  .confetti { display: none; }
+}

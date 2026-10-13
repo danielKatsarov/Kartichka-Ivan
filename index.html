@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ЧРД</title>
+
+  <!-- Fonts (change the names here AND in style.css section 1) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;600;700&display=swap">
+
+  <!-- Your styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- The checkbox that opens and closes the card. Leave it as it is. -->
+  <input class="open-toggle" type="checkbox" id="open" aria-label="Open the card">
+
+
+  <!-- ============ THE CARD ============ -->
+  <div class="card">
+
+    <!-- RIGHT PAGE (inside): the cake -->
+    <section class="page-right">
+      <p class="wish">Шибай се!</p>   <!-- EDIT: text above the cake -->
+
+      <div class="cake">
+        <div class="tier tier-top">
+          <span class="candle candle-1"><span class="flame"></span></span>
+          <span class="candle candle-2"><span class="flame"></span></span>
+          <span class="candle candle-3"><span class="flame"></span></span>
+        </div>
+        <div class="tier tier-bottom"></div>
+      </div>
+    </section>
+
+    <!-- COVER: has a front and a back (the back is the left page) -->
+    <div class="cover">
+
+      <!-- Front of the card -->
+      <label class="front" for="open">
+        <span class="balloon balloon-1"></span>
+        <span class="balloon balloon-2"></span>
+        <span class="balloon balloon-3"></span>
+
+        <!-- EDIT: the title on the cover -->
+        <h1 class="title">
+          <span class="title-line-1">Честит</span>
+          <span class="title-line-2">Рожден ден!</span>
+        </h1>
+
+        <span class="hint">Tap to open</span>
+      </label>
+
+      <!-- LEFT PAGE (inside): your message -->
+      <div class="back">
+        <div class="bunting"><i></i><i></i><i></i><i></i><i></i></div>
+
+        <!-- EDIT: the name -->
+        <h1 class="greeting">БРАВО УЕ ИВАНЕЕ</h1>
+
+        <!-- EDIT: your message -->
+        <p class="message">
+          Румен, засмян, пак си нагърмян!
+        </p>
+
+        <!-- EDIT: who it is from -->
+        <p class="signature">Мноу хубав рожден ден</p>
+
+        <label class="close" for="open">Close card</label>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Falling confetti. Add or remove <i></i> pieces (CSS section 7 positions 12 of them). -->
+  <div class="confetti">
+    <i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
+
+</body>
+</html>
